@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
+const chalk = require('chalk');
 
-console.log(
+console.log(chalk.green(
     `
      /$$$$$$$$                      /$$                                    
     | $$_____/                     | $$                                    
@@ -25,7 +26,7 @@ console.log(
                                            |  $$$$$$/                      
                                             \\______/                       
     `
-);
+));
 
 const initPrompts = [
     {
@@ -34,4 +35,5 @@ const initPrompts = [
         name: 'startChoice',
         choices: ['View All Employees', 'View All Employees By Department', 'View All Employees By Manager', 'Add Employee', 'Remove Employee', 'Update Employee Role', 'Update Employee Manager']
     }
-]
+];
+
