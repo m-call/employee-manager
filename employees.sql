@@ -16,7 +16,7 @@ CREATE TABLE role (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(12,2) NOT NULL,
-    department_id int NOT NULL
+    department_id INT NOT NULL
 );
 
 -- Creates the table to store employee related variables and values -- 
