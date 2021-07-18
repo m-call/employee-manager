@@ -37,3 +37,56 @@ const initPrompts = [
     }
 ];
 
+function init() {
+
+    inquirer.prompt(initPrompts)
+        .then((res) => {
+            if (res.startChoice == 'View All Employees') {
+                viewAllEmployees();
+            } else if (res.startChoice == 'View All Employees By Department') {
+                viewByDepartment();
+            } else if (res.startChoice == 'View All Employees By Manager') {
+                viewByManager();
+            } else if (res.startChoice == 'Add Employee') {
+                addEmployee();
+            } else if (res.startChoice == 'Remove Employee') {
+                removeEmployee();
+            } else if (res.startChoice == 'Update Employee Role') {
+                updateRole();
+            } else {
+                updateManager();
+            }
+        })
+
+};
+
+function viewAllEmployees() {
+
+};
+
+function viewByDepartment() {
+
+};
+
+function viewByManager() {
+
+};
+
+function addEmployee() {
+
+};
+
+function removeEmployee () {
+
+};
+
+function updateRole() {
+
+};
+
+function updateManager() {
+
+};
+
+init();
+
