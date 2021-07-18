@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+const connection = require('./employeesDBConnection');
 
 console.log(chalk.green(
     `
@@ -53,15 +54,21 @@ function init() {
                 removeEmployee();
             } else if (res.startChoice == 'Update Employee Role') {
                 updateRole();
-            } else {
+            } else if (res.startChoice == 'Update Employee Manager'){
                 updateManager();
+            } else {
+                connection.end();
             }
-        })
+        });
 
 };
 
 function viewAllEmployees() {
+    connection.query('SELECT * FROM employee', (err, results) => {
+        if (err) throw err;
 
+        console.table(results);
+    });
 };
 
 function viewByDepartment() {
