@@ -1,7 +1,10 @@
+// Importing necessary NPM Packages and files
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+let cTable = require('console.table');
 const connection = require('./employeesDBConnection');
 
+// ASCII Banner that greets the user when they run the application
 console.log(chalk.green(
     `
      /$$$$$$$$                      /$$                                    
@@ -34,16 +37,7 @@ const initPrompts = [
         type: 'list',
         message: 'What would you like to do?',
         name: 'startChoice',
-        choices: ['View All Employees', 'View All Employees By Department', 'View All Employees By Manager', 'Add Employee', 'Remove Employee', 'Update Employee Role', 'Update Employee Manager', 'Add Department', 'Remove Department', 'Quit']
-    }
-];
-
-const depPrompts = [
-    {
-        type: 'list',
-        message: 'Which department would you like to see employees for?',
-        name: 'department',
-        choices: ['Sales', 'Finance', 'Legal', 'Engineering']
+        choices: ['View All Employees', 'View All Departments', 'View All Roles', 'Add Employee', 'Remove Employee', 'Update Employee Role', 'Add Role', 'Remove Role', 'Add Department', 'Remove Department', 'Quit']
     }
 ];
 
@@ -90,24 +84,61 @@ const removeEmpPrompts = [
     }
 ];
 
+const updateRolePrompts = [
+    {
+        type: 'list',
+        message: 'Which employee do you want to update the role for?',
+        name: 'employee',
+        choices: []
+    },
+];
+
+const updateManPrompts = [
+    {
+        type: 'list',
+        message: 'Which employee do you want to update the manager for?',
+        name: 'employee',
+        choices: []
+    }
+];
+
+const addDepPrompts = [
+    {
+        type: 'input',
+        message: 'What is the name of the department you would like to add?',
+        name: 'department'
+    }
+];
+
+const removeDepPrompts = [
+    {
+        type: 'list',
+        message: 'Which department would you like to remove?',
+        name: 'department',
+        choices: []
+    }
+];
+
 function init() {
 
     inquirer.prompt(initPrompts)
         .then((res) => {
             if (res.startChoice == 'View All Employees') {
                 viewAllEmployees();
-            } else if (res.startChoice == 'View All Employees By Department') {
-                viewByDepartment();
-            } else if (res.startChoice == 'View All Employees By Manager') {
-                viewByManager();
+            } else if (res.startChoice == 'View All Departments') {
+                viewAllDepartments();
+            } else if (res.startChoice == 'View All Roles') {
+                viewAllRoles();
             } else if (res.startChoice == 'Add Employee') {
                 addEmployee();
             } else if (res.startChoice == 'Remove Employee') {
                 removeEmployee();
             } else if (res.startChoice == 'Update Employee Role') {
                 updateRole();
-            } else if (res.startChoice == 'Update Employee Manager') {
-                updateManager();
+            } else if (res.startChoice == 'Add Role') {
+                addRole();
+            } else if (res.startChoice == 'Remove Role') {
+                removeRole();
             } else if (res.startChoice == 'Add Department') {
                 addDepartment();
             } else if (res.startChoice == 'Remove Department') {
@@ -127,26 +158,80 @@ function viewAllEmployees() {
     connection.query('SELECT * FROM employee', (err, results) => {
         if (err) throw err;
 
-        console.table(results);
+        cTable = results;
+
+        console.table(cTable);
+        init();
+    })
+
+};
+
+const viewByDepartment = () => {
+
+    // connection.query('SELECT name FROM department', (err, results) => {
+    //     if (err) throw err;
+
+    //     inquirer.prompt([
+    //         {
+    //             type: 'rawlist',
+    //             name: 'department',
+    //             choices() {
+    //                 const choiceArray = [];
+    //                 results.forEach(({ name }) => {
+    //                     choiceArray.push(name);
+    //                 });
+    //                 return choiceArray;
+    //             },
+    //             message: 'Which department would you like to see employees for?'
+    //         }
+    //     ])
+    //     .then((res) => {
+    //         let chosenItem;
+    //         res.forEach((department) => {
+    //             if (department.name === )
+    //         })
+    //     });
+    // });
+
+    // const depPrompts = [
+    //     {
+    //         type: 'list',
+    //         message: 'Which department would you like to see employees for?',
+    //         name: 'department',
+    //         choices: []
+    //     }
+    // ];
+
+    // inquirer.prompt()
+    //     .then((res) => {
+
+    //     });
+
+};
+
+function viewAllDepartments() {
+
+    connection.query('SELECT name FROM department', (err, results) => {
+        if (err) throw err;
+
+        cTable = results;
+
+        console.table(cTable);
+        init();
     });
 
 };
 
-function viewByDepartment() {
+function viewAllRoles() {
 
-    inquirer.prompt(depPrompts)
-        .then((res) => {
+    connection.query('SELECT title FROM role', (err, results) => {
+        if (err) throw err;
 
-        });
+        cTable = results;
 
-};
-
-function viewByManager() {
-
-    inquirer.prompt(manPrompts)
-        .then((res) => {
-
-        });
+        console.table(cTable);
+        init();
+    });
 
 };
 
@@ -170,17 +255,37 @@ function removeEmployee () {
 
 function updateRole() {
 
+    inquirer.prompt(updateRolePrompts)
+        .then((res) => {
+
+        });
+
 };
 
 function updateManager() {
+
+    inquirer.prompt(updateManPrompts)
+        .then((res) => {
+
+        });
 
 };
 
 function addDepartment() {
 
+    inquirer.prompt(addDepPrompts)
+        .then((res) => {
+
+        });
+
 };
 
 function removeDepartment() {
+
+    inquirer.prompt(removeDepPrompts)
+        .then((res) => {
+
+        });
 
 };
 

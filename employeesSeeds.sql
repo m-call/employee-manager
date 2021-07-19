@@ -19,25 +19,25 @@ INSERT INTO role (title, salary, department_id)
 VALUES ("Salesperson", 80000, 1);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Sales Manager", 120000, 2);
+VALUES ("Sales Manager", 120000, 1);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Accountant", 120000, 3);
+VALUES ("Accountant", 120000, 2);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Account Manager", 160000, 4);
+VALUES ("Account Manager", 160000, 2);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Lawyer", 160000, 5);
+VALUES ("Lawyer", 160000, 3);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Legal Team Lead", 220000, 6);
+VALUES ("Legal Team Lead", 220000, 3);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Software Engineer", 140000, 7);
+VALUES ("Software Engineer", 140000, 4);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Lead Engineer", 240000, 8);
+VALUES ("Lead Engineer", 240000, 4);
 
 -- Creates new rows containing data in the employee table --
 INSERT INTO employee (first_name, last_name, role_id)
