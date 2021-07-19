@@ -2,7 +2,11 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 let cTable = require('console.table');
-const connection = require('./employeesDBConnection');
+const connection = require('./employeesDB/employeesDBConnection');
+
+// Used to convert the selected role/manager to a numeric id value
+let roleID;
+let managerID;
 
 // ASCII Banner that greets the user when they run the application
 console.log(chalk.green(
@@ -41,15 +45,6 @@ const initPrompts = [
     }
 ];
 
-const manPrompts = [
-    {
-        type: 'list',
-        message: 'Which manager do you want to see the employee list for?',
-        name: 'manager',
-        choices: ['Jeff Harkens', 'Aaron Loom', 'David Ernest', 'Michael Thomas']
-    }
-];
-
 const addEmpPrompts = [
     {
         type: 'input',
@@ -72,15 +67,6 @@ const addEmpPrompts = [
         message: 'Who is the employee\'s manager?',
         name: 'manager',
         choices: ['None', 'Jeff Harkens', 'Aaron Loom', 'David Ernest', 'Michael Thomas']
-    }
-];
-
-const removeEmpPrompts = [
-    {
-        type: 'list',
-        message: 'Which employee do you want to remove?',
-        name: 'employee',
-        choices: []
     }
 ];
 
@@ -130,7 +116,7 @@ function init() {
             } else if (res.startChoice == 'View All Roles') {
                 viewAllRoles();
             } else if (res.startChoice == 'Add Employee') {
-                addEmployee();
+                createEmployeeIDs();
             } else if (res.startChoice == 'Remove Employee') {
                 removeEmployee();
             } else if (res.startChoice == 'Update Employee Role') {
@@ -235,21 +221,88 @@ function viewAllRoles() {
 
 };
 
-function addEmployee() {
+function createEmployeeIDs() {
 
     inquirer.prompt(addEmpPrompts)
-        .then((res) => {
+    .then((res) => {
+        if (res.role == 'Salesperson' || 'Sales Manager') {
+            roleID = 1;
+        } else if (res.role == 'Accountant' || 'Account Manager') {
+            roleID = 2;
+        } else if (res.role == 'Lawyer' || 'Legal Team Lead') {
+            roleID = 3;
+        } else if (res.role == 'Software Engineer' || 'Lead Engineer') {
+            roleID = 4;
+        } else {
+            connection.end();
+        }
 
-        });
+        if (res.manager == 'None') {
+            managerID;
+        } else if (res.manager == 'Jeff Harkens') {
+            managerID = 1;
+        } else if (res.manager == 'Aaron Loom') {
+            managerID = 2;
+        } else if (res.manager == 'David Ernest') {
+            managerID = 3;
+        } else if (res.manager == 'Michael Thomas') {
+            managerID = 4;
+        } else {
+            connection.end();
+        }
+
+        addEmployee(res.firstName, res.lastName, roleID, managerID);
+    });
+
+}
+
+function addEmployee(firstName, lastName, roleID, managerID) {
+
+    connection.query('INSERT INTO employee SET ?',
+    {
+        first_name: firstName,
+        last_name: lastName,
+        role_id: roleID,
+        manager_id: managerID
+    },
+    (err, res) => {
+        if (err) throw err;
+
+        console.log('Employee has been successfully added!');
+        init();
+    })
 
 };
 
-function removeEmployee () {
+const removeEmployee = () => {
 
-    inquirer.prompt(removeEmpPrompts)
+        connection.query('SELECT first_name, last_name FROM employee', (err, results) => {
+        if (err) throw err;
+
+        inquirer.prompt([
+            {
+                type: 'rawlist',
+                name: 'employee',
+                choices() {
+                    const choiceArray = [];
+                    results.forEach(({ first_name }) => {
+                        choiceArray.push(first_name);
+                    });
+                    return choiceArray;
+                },
+                message: 'Which employee do you want to remove?'
+            }
+        ])
         .then((res) => {
-
+            console.log(res.employee);
+            connection.query('DELETE FROM employee WHERE ?',
+            {
+                first_name: res.employee
+            })
+            console.log('Employee has been successfully removed!')
+            init();
         });
+    });
 
 };
 

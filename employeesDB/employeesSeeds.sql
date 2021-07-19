@@ -44,10 +44,10 @@ INSERT INTO employee (first_name, last_name, role_id)
 VALUES ("Jeff", "Harkens", 1);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Ian", "Dooley", 2, 1);
+VALUES ("Ian", "Dooley", 1, 1);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Paul", "Moore", 2, 1);
+VALUES ("Paul", "Moore", 1, 1);
 
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES ("Aaron", "Loom", 2);
