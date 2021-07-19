@@ -70,15 +70,6 @@ const addEmpPrompts = [
     }
 ];
 
-const updateRolePrompts = [
-    {
-        type: 'list',
-        message: 'Which employee do you want to update the role for?',
-        name: 'employee',
-        choices: []
-    },
-];
-
 const updateManPrompts = [
     {
         type: 'list',
@@ -120,7 +111,7 @@ function init() {
             } else if (res.startChoice == 'Remove Employee') {
                 removeEmployee();
             } else if (res.startChoice == 'Update Employee Role') {
-                updateRole();
+                updateRoleEmp();
             } else if (res.startChoice == 'Add Role') {
                 addRole();
             } else if (res.startChoice == 'Remove Role') {
@@ -225,13 +216,13 @@ function createEmployeeIDs() {
 
     inquirer.prompt(addEmpPrompts)
     .then((res) => {
-        if (res.role == 'Salesperson' || 'Sales Manager') {
+        if (res.role == 'Salesperson' || res.role == 'Sales Manager') {
             roleID = 1;
-        } else if (res.role == 'Accountant' || 'Account Manager') {
+        } else if (res.role == 'Accountant' || res.role == 'Account Manager') {
             roleID = 2;
-        } else if (res.role == 'Lawyer' || 'Legal Team Lead') {
+        } else if (res.role == 'Lawyer' || res.role == 'Legal Team Lead') {
             roleID = 3;
-        } else if (res.role == 'Software Engineer' || 'Lead Engineer') {
+        } else if (res.role == 'Software Engineer' || res.role == 'Lead Engineer') {
             roleID = 4;
         } else {
             connection.end();
@@ -250,7 +241,7 @@ function createEmployeeIDs() {
         } else {
             connection.end();
         }
-
+        console.log(roleID, managerID);
         addEmployee(res.firstName, res.lastName, roleID, managerID);
     });
 
@@ -276,7 +267,7 @@ function addEmployee(firstName, lastName, roleID, managerID) {
 
 const removeEmployee = () => {
 
-        connection.query('SELECT first_name, last_name FROM employee', (err, results) => {
+        connection.query('SELECT first_name FROM employee', (err, results) => {
         if (err) throw err;
 
         inquirer.prompt([
@@ -294,7 +285,6 @@ const removeEmployee = () => {
             }
         ])
         .then((res) => {
-            console.log(res.employee);
             connection.query('DELETE FROM employee WHERE ?',
             {
                 first_name: res.employee
@@ -306,16 +296,80 @@ const removeEmployee = () => {
 
 };
 
-function updateRole() {
+function updateRoleEmp() {
 
-    inquirer.prompt(updateRolePrompts)
+    connection.query('SELECT first_name FROM employee', (err, results) => {
+        if (err) throw err;
+
+        inquirer.prompt([
+            {
+                type: 'rawlist',
+                name: 'employee',
+                choices() {
+                    const choiceArray = [];
+                    results.forEach(({ first_name }) => {
+                        choiceArray.push(first_name);
+                    });
+                    return choiceArray;
+                },
+                message: 'Which employee do you want to update the role for?'
+            }
+        ])
         .then((res) => {
+            updateRole(res.employee);
+        })
 
-        });
+    });
 
 };
 
-function updateManager() {
+function updateRole(employee) {
+
+    connection.query('SELECT title FROM role', (err, results) => {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                type: 'rawlist',
+                name: 'role',
+                choices() {
+                    const choiceArray = [];
+                    results.forEach(({ title }) => {
+                        choiceArray.push(title);
+                    });
+                    return choiceArray;
+                },
+                message: 'What do you want to update this employee\'s role to?'
+            }
+        ])
+        .then((res) => {
+            console.log(res.role);
+            if (res.role == 'Salesperson' || res.role == 'Sales Manager') {
+                roleID = 1;
+            } else if (res.role == 'Accountant' || res.role == 'Account Manager') {
+                roleID = 2;
+            } else if (res.role == 'Lawyer' || res.role == 'Legal Team Lead') {
+                roleID = 3;
+            } else if (res.role == 'Software Engineer' || res.role == 'Lead Engineer') {
+                roleID = 4;
+            } else {
+                connection.end();
+            }
+            connection.query('UPDATE employee SET ? WHERE ?',
+            [
+                {
+                    role_id: roleID         
+                },
+                {
+                    first_name: employee
+                }
+            ],
+            console.log('Employee role has been successfully updated!'));
+            init();
+        });
+    });
+};
+
+function addRole() {
 
     inquirer.prompt(updateManPrompts)
         .then((res) => {
@@ -323,6 +377,15 @@ function updateManager() {
         });
 
 };
+
+function removeRole() {
+
+    inquirer.prompt(updateManPrompts)
+    .then((res) => {
+
+    });
+
+}
 
 function addDepartment() {
 
