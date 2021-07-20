@@ -330,6 +330,7 @@ function updateRole(employee) {
     });
 };
 
+// This function adds a new role to a specific existing department in the database using a MySQL query
 function addRole() {
 
     connection.query('SELECT name FROM department', (err, results) => {
@@ -391,6 +392,7 @@ function addRole() {
 
 };
 
+// This function adds a new department to the database using a MySQL query
 function addDepartment() {
 
     inquirer.prompt(addDepPrompts)
